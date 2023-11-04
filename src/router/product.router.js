@@ -1,7 +1,7 @@
 import { ProductManager } from '../manager/productManager.js';
 import {Router} from 'express';
 import { ProductValidator } from '../middlewares/productValidator.js';
-const productManager =new ProductManager("./data/products.Json")
+const productManager =new ProductManager("./src/data/products.Json")
 const router = Router();
 
 
@@ -43,25 +43,12 @@ router.get('/:id',async(req,res)=>{
         res.status(500).json (error.message)   
     }
 })
-router.delete('/:id',async (req,res)=>{
+router.delete("/:id",async (req,res)=>{
     try {
-        const {id}=req.params
-        const iD=Number(id)
-        await productManager.getDeleteProduct(iD)
-        res.json({message:`product id : ${iD} deleted`})
-    } catch (error) {
-        res.status(500).json(error.message)
-        
-    }
-})
-
-router.put('/:id',async (req,res)=>{
-    try {
-        const {id}= req.params
-        const Id=Number(id)
-        const pro =await productManager.updateProduct(Id)
-        if(!pro)res.status(404).json({message:'product not found'})
-        else res.status(200).json({message:`product id: ${id}updated`})
+        const { id }=req.params
+        const idNumber=Number(id)
+        await productManager.getDeleteProduct(idNumber)
+        res.json({message:`product id : ${idNumber} deleted`})
     } catch (error) {
         res.status(500).json(error.message)
         
@@ -69,5 +56,20 @@ router.put('/:id',async (req,res)=>{
 })
 
 
-export default router
+router.put("/:id", async (req, res) => {
+    try {
+      const product = { ...req.body };
+      const { id } = req.params;
+      const idNumber = Number(id);
+      const productOk = await productManager.getProductById(idNumber);
+      if (!productOk) res.status(404).json({ message: "product not found" });
+      else await productManager.saveProductToCart(product, idNumber);
+      res.status(200).json({ message: `product id: ${id} updated` });
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  });
+
+
+export default router;
 

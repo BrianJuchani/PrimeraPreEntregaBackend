@@ -30,18 +30,27 @@ export class CartManager{
             console.log(error)
         }
     }
-    async getCartById(id){
-        const buscardor= await fs.promises.readFile(this.path, 'utf-8')
-        const buscar =await JSON.parse(buscardor)
-        const encontrado=await buscar.find((itemID)=>itemID.id===id)
-        if(buscardor){
-            console.log('----------ID encontrado--------------')
-            console.log(encontrado)
-        }else{
-            console.log('not found'+ id)
+    async getCartById(id) {
+        try {
+            const carts = await this.getCarts();
+            const cart = carts.find(c => c.id == id);
+    
+            if (cart) {
+                const cartWithQuantity = {
+                    ...cart,
+                    products: cart.products.map((product) => ({
+                        ...product,
+                        quantity: product.quantity || 1, 
+                    })),
+                };
+    
+                return cartWithQuantity;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
         }
-        return encontrado
-
     }
 
     async saveProductToCart(idCart, idProd){
@@ -62,4 +71,3 @@ export class CartManager{
         }
       }
 }
-      

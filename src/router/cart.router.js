@@ -1,8 +1,10 @@
 import { Router } from "express";
+import { ProductManager } from "../manager/productManager.js";
 const router =Router()
 
 import { CartManager } from "../manager/cartManager.js";
-const cartManager = new CartManager("./data/cart.Json")
+const cartManager = new CartManager("./src/data/cart.Json")
+const productManager=new ProductManager()
 
 
 router.post('/', async(req, res)=>{
@@ -16,28 +18,48 @@ router.post('/', async(req, res)=>{
     }
 });
 
-router.get('/cid',async(req,res)=>{
-    try {
-        const {cid} = req.params
-        const carts = await await cartManager.getCartById(Number(cid))
-        if(!carts)res.status(404).json({message:'id no encontrado'})
-        else res.status(200).json(carts)
-    } catch (error) {
-        res.status(500).json(error.message)
-    }
-})
 
-router.post('/:idCart/product/:idProd',async(req,res)=>{
-    const {idCart}=req.params
-    const {idProd}=req.params
-    const cart =await cartManager.saveProductToCart(idCart)
-    const prod= await cartManager.saveProductToCart(idProd)
-    if(prod){
-        await cartManager.saveProductToCart(cart,prod)
-        send.status(200).json({message:'productos agregado al carrito'})
-    }else{
-        send.status(500).json({message:'productos no encontrado'})
+
+router.get('/:cid', async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const cart = await cartManager.getCartById(cid);
+
+        if (cart) {
+            const cartWithQuantity = {
+                ...cart,
+                products: cart.products.map((product) => ({
+                    ...product,
+                    quantity: product.quantity || 1,
+                })),
+            };
+            res.status(200).json(cartWithQuantity);
+        } else {
+            res.status(404).json({ error: 'Cart not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-})
+});
+
+
+router.post('/:idCart/product/:idProd', async (req, res) => {
+    try {
+        const { idProd, idCart } = req.params;
+        const cart = await cartManager.getCartById(Number(idCart));
+        const product = await productManager.getProductById(Number(idProd)); 
+        if (cart && product) {
+            const updatedCart = await cartManager.saveProductToCart(Number(idCart), Number(idProd));
+            const addedProduct = updatedCart.products.find(p => p.product === Number(idProd));
+            res.status(201).json({ message: 'Product added to cart successfully', addedProduct, cart: updatedCart });
+        } else {
+            res.status(404).json({ error: 'Cart or Product not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 export default router
