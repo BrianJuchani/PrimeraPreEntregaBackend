@@ -1,0 +1,16 @@
+     <ul>
+        {{#if products.lenght}}
+            {{#each products}}
+        <li>{{title}}</li>
+        <li>{{description}}</li>
+        <li>{{code}}</li>
+        <li>{{price}}</li>
+        <li>{{status}}</li>
+        <li>{{stock}}</li>
+        <li>{{category}}</li>
+        {{/each}}
+        {{else}}
+        <p>no exite</p>
+        {{/if}}
+
+    </ul> 
