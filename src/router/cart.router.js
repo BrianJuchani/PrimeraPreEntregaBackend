@@ -3,8 +3,8 @@ import { ProductManager } from "../manager/productManager.js";
 const router =Router()
 
 import { CartManager } from "../manager/cartManager.js";
-const cartManager = new CartManager("./src/data/cart.Json")
-const productManager=new ProductManager()
+const cartManager = new CartManager("./src/data/cart.json")
+const productManager=new ProductManager('./src/data/products.json')
 
 
 router.post('/', async(req, res)=>{

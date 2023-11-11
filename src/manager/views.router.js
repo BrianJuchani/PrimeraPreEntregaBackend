@@ -1,11 +1,11 @@
 import express from "express";
-import productRouter from './router/product.router.js'
-import cartRouter from './router/cart.router.js'
+import productRouter from '../router/product.router.js'
+import cartRouter from '../router/cart.router.js'
 import morgan from 'morgan';
 // import { server } from "socket.io"
 import { __dirname } from "./utils.js";
 import handlebars from 'express-handlebars'
-import viewsRouter from './router/views.router.js'
+import viewsRouter from '../router/views.router.js'
 
 const app=express()
 

@@ -1,7 +1,10 @@
 import { ProductManager } from '../manager/productManager.js';
 import {Router} from 'express';
 import { ProductValidator } from '../middlewares/productValidator.js';
-const productManager =new ProductManager("./src/data/products.Json")
+const productManager = new ProductManager("./src/data/products.json")
+
+
+
 const router = Router();
 
 
@@ -34,7 +37,7 @@ router.post('/',ProductValidator,async(req,res)=>{
       
 })  
 router.get('/:id',async(req,res)=>{
-    try {
+    try { ServiceWork
         const {id}= req.params
         const prod=await productManager.getProductById(Number(id))
         if(!prod)res.status(404).json({message:'id no encontrado'})

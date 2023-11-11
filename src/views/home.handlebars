@@ -1,5 +1,5 @@
      <ul>
-        {{#if products.lenght}}
+        {{#if products.length}}
             {{#each products}}
         <li>{{title}}</li>
         <li>{{description}}</li>
@@ -8,9 +8,13 @@
         <li>{{status}}</li>
         <li>{{stock}}</li>
         <li>{{category}}</li>
+        <br>
+        <br>
         {{/each}}
         {{else}}
         <p>no exite</p>
         {{/if}}
 
     </ul> 
+
+ 
